@@ -6,7 +6,7 @@ tf.logging.set_verbosity(tf.logging.INFO)
 def main():
     feature_columns = [tf.contrib.layers.real_valued_column(k) for k  in features]
      #classifier = tf.contrib.learn.DNNClassifier(feature_columns=feature_columns,hidden_units=[10,5], n_classes=20,model_dir="../tmp/iris_model")
-    regressor = tf.contrib.learn.DNNRegressor(feature_columns=feature_columns,hidden_units=[10,5], model_dir="../tmp/reg_model")
+    regressor = tf.contrib.learn.DNNRegressor(feature_columns=feature_columns,hidden_units=[10,5], model_dir="../tmp/reg_add_model")
     def get_train_inputs():
          npy = np.array([0],dtype=np.float)
          label_x = {};
