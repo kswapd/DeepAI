@@ -37,6 +37,8 @@ def main():
      num_epochs=1,
      shuffle=False)
      classifier.train(input_fn=train_input_fn, steps=2000)
+     accuracy_score = classifier.evaluate(input_fn=test_input_fn)["accuracy"]
+     print("\nTest Accuracy: {0:f}\n".format(accuracy_score))
      predictions = list(classifier.predict(input_fn=predict_input_fn))
      predicted_classes = [p["classes"] for p in predictions]
      #print("New Samples, Class Predictions: {}\n".format(predictions))
