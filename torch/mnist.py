@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, transforms
 import torch.nn.functional as F
+import matplotlib.pyplot as plt
 class MyNet(nn.Module):
     def __init__(self):
         super(MyNet, self).__init__()
@@ -17,7 +18,15 @@ class MyNet(nn.Module):
         x = x.view(-1, 32*7*7)
         x = self.fc1(x)
         return x
-    
+def plot_kernels(weights, title):
+    fig, axes = plt.subplots(2, 8, figsize=(12, 4))
+    fig.suptitle(title, fontsize=16)
+    for i, ax in enumerate(axes.flat):
+        if i < weights.shape[0]:
+            ax.imshow(weights[i, 0].cpu().detach().numpy(), cmap="gray")
+            ax.axis("off")
+    plt.show()
+
 transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5,), (0.5,))
@@ -30,9 +39,11 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
 net = MyNet()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net.parameters(), lr=0.001)
-
+print("初始卷积核：")
+plot_kernels(net.conv1.weight, "Conv1 Kernels (Before Training)")
 # 训练循环
-for epoch in range(5):
+for epoch in range(3):
+    print(f"Epoch {epoch+1} started")
     for images, labels in trainloader:
         optimizer.zero_grad()
         outputs = net(images)
@@ -40,3 +51,5 @@ for epoch in range(5):
         loss.backward()
         optimizer.step()
     print(f"Epoch {epoch+1} done")
+print("训练后卷积核：")
+plot_kernels(net.conv1.weight, "Conv1 Kernels (After Training)")

@@ -21,8 +21,8 @@ class MyNet(nn.Module):
         return logits, preds
 
 model = MyNet(2,2)
-x = torch.tensor([[1.0, 2.0]])
-y = torch.tensor([1])
+x = torch.tensor([[1.0, 2.0], [2.0, 4.0]])
+y = torch.tensor([1, 0])
 
 
 criterion = nn.CrossEntropyLoss()
