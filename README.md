@@ -25,3 +25,9 @@ python -m pip uninstall torch torchvision torchaudio -y
 python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
 $env:HTTP_PROXY="http://127.0.0.1:10809"
 $env:HTTPS_PROXY="http://127.0.0.1:10809"
+
+
+https://github.com/computerhistory/AlexNet-Source-Code.git
+https://github.com/dnouri/cuda-convnet.git
+https://code.google.com/archive/p/cuda-convnet/source/default/source
+https://code.google.com/archive/p/cuda-convnet2/source/default/source
