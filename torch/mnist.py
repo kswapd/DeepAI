@@ -4,6 +4,7 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
+import time
 class MyNet(nn.Module):
     def __init__(self):
         super(MyNet, self).__init__()
@@ -41,8 +42,15 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net.parameters(), lr=0.001)
 print("初始卷积核：")
 plot_kernels(net.conv1.weight, "Conv1 Kernels (Before Training)")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Model is running in:", device)
+print(torch.__version__)
+print(torch.version.cuda)
+print(torch.cuda.is_available())
+net.to("cpu")
+start_time = time.time()
 # 训练循环
-for epoch in range(3):
+for epoch in range(10):
     print(f"Epoch {epoch+1} started")
     for images, labels in trainloader:
         optimizer.zero_grad()
@@ -51,5 +59,7 @@ for epoch in range(3):
         loss.backward()
         optimizer.step()
     print(f"Epoch {epoch+1} done")
+end_time = time.time()
+print(f"Total training time: {end_time - start_time:.2f} seconds")
 print("训练后卷积核：")
 plot_kernels(net.conv1.weight, "Conv1 Kernels (After Training)")

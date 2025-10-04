@@ -3,8 +3,8 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
-
-
+import matplotlib
+import time
 def plot_kernels(weights, title):
     fig, axes = plt.subplots(2, 8, figsize=(12, 4))
     fig.suptitle(title, fontsize=16)
@@ -12,7 +12,8 @@ def plot_kernels(weights, title):
         if i < weights.shape[0]:
             ax.imshow(weights[i, 0].cpu().detach().numpy(), cmap="gray")
             ax.axis("off")
-    plt.show()
+    matplotlib.use('TkAgg')  # 或者 'Qt5Agg', 'WXAgg' 视系统而定
+    #plt.show()
 class MyNet(nn.Module):
     def __init__(self,  in_channels=1, img_width=20, img_height=20, num_classes=10):
         super(MyNet, self).__init__()
@@ -55,6 +56,15 @@ img_width = 20
 img_height = 20
 num_classes = 10
 batch_size = 10
+gpu_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+cpu_device = torch.device("cpu")
+device = cpu_device
+
+print(torch.__version__)
+print(torch.version.cuda)
+print(torch.cuda.is_available())
+print("Model is running in:", device)
+#torch.to(torch.accelerator.current_accelerator())
 model = MyNet(in_channels=in_channels, img_width=img_width, img_height=img_height, num_classes=num_classes)
 #model = MLP(in_channels=in_channels, img_width=img_width, img_height=img_height, num_classes=num_classes)
 #x = torch.tensor([[1.0, 2.0]])
@@ -64,15 +74,20 @@ for i in range(x.shape[0]):
     #print("x[%d]", x[i,0,:,:])
 y = torch.tensor([0,1,2,3,4,5,6,7,8,9])
 
+x = x.to(device)
+y = y.to(device)
+model = model.to(device)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.05)
-#plot_kernels(model.conv1.weight, "Conv1 Kernels (Before Training)")
+plot_kernels(model.conv1.weight, "Conv1 Kernels (Before Training)")
 #print("before:", model.conv1.weight)   
 #print("\nEmbedding matrix before training:")
 #print("权重:", model.fc.weight.data)
 
-for epoch in range(200):
+
+start_time = time.time()
+for epoch in range(1000):
     #print(f"Epoch {epoch+1} started")
     optimizer.zero_grad()
     outputs, p = model(x)
@@ -84,13 +99,14 @@ for epoch in range(200):
     #print(f"Epoch {epoch+1} done")
     #print(f"Epoch {epoch}, Loss: {loss.item():.4f}")
     #print(f"权重: {epoch}", model.fc.weight.data)
-
+end_time = time.time()
+print(f"Total training time: {end_time - start_time:.2f} seconds")
 # 6. 看 embedding 矩阵有没有更新
 #print("\nEmbedding matrix after training:")
 #print(mmmm.embed.weight.data)
 logits, preds = model(x)
-#print("更新后 logits:\n", logits)
-#print("更新后 preds:\n", preds)
+print("更新后 logits:\n", logits)
+print("更新后 preds:\n", preds)
 #plot_kernels(model.conv1.weight, "Conv1 Kernels (After Training)")
 #print("after:", model.conv1.weight) 
 #output = model(x)
