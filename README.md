@@ -23,3 +23,5 @@ trusted-host = mirrors.aliyun.com
 
 python -m pip uninstall torch torchvision torchaudio -y
 python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+$env:HTTP_PROXY="http://127.0.0.1:10809"
+$env:HTTPS_PROXY="http://127.0.0.1:10809"

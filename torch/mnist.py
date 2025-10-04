@@ -32,9 +32,11 @@ transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5,), (0.5,))
 ])
-
+print(torch.__version__)
+print(torch.version.cuda)
+print(torch.cuda.is_available())
 trainset = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True, pin_memory=True)
 
 # 网络、损失函数、优化器
 net = MyNet()
@@ -42,17 +44,18 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net.parameters(), lr=0.001)
 print("初始卷积核：")
 plot_kernels(net.conv1.weight, "Conv1 Kernels (Before Training)")
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+gpu_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+cpu_device = torch.device("cpu")
+device = gpu_device
 print("Model is running in:", device)
-print(torch.__version__)
-print(torch.version.cuda)
-print(torch.cuda.is_available())
-net.to("cpu")
+net = net.to(device)
 start_time = time.time()
 # 训练循环
-for epoch in range(10):
+for epoch in range(5):
     print(f"Epoch {epoch+1} started")
     for images, labels in trainloader:
+        images = images.to(device, non_blocking=True)
+        labels = labels.to(device, non_blocking=True)
         optimizer.zero_grad()
         outputs = net(images)
         loss = criterion(outputs, labels)
