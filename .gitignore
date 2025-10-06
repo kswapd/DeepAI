@@ -104,3 +104,4 @@ cnn/MNIST-data/
 DeepAIEnv/
 data/
 .vscode/
+*.pth
