@@ -55,7 +55,7 @@ in_channels = 1
 img_width = 20
 img_height = 20
 num_classes = 10
-batch_size = 10
+batch_size = 23
 gpu_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 cpu_device = torch.device("cpu")
 device = cpu_device
@@ -69,15 +69,18 @@ model = MyNet(in_channels=in_channels, img_width=img_width, img_height=img_heigh
 #model = MLP(in_channels=in_channels, img_width=img_width, img_height=img_height, num_classes=num_classes)
 #x = torch.tensor([[1.0, 2.0]])
 x = torch.full((batch_size, in_channels, img_width, img_height), 1.0, dtype=torch.float32)
+#y = torch.tensor([])
+y = torch.empty(0, dtype=torch.long)
 for i in range(x.shape[0]):
     x[i,0,:,:] = float(i % num_classes) * 10
     #print("x[%d]", x[i,0,:,:])
-y = torch.tensor([0,1,2,3,4,5,6,7,8,9])
+    y = torch.cat((y, torch.tensor([int(i % num_classes)])))
+#y = torch.tensor([0,1,2,3,4,5,6,7,8,9])
 
 x = x.to(device)
 y = y.to(device)
 model = model.to(device)
-
+print(model)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.05)
 plot_kernels(model.conv1.weight, "Conv1 Kernels (Before Training)")

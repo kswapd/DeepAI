@@ -31,3 +31,17 @@ https://github.com/computerhistory/AlexNet-Source-Code.git
 https://github.com/dnouri/cuda-convnet.git
 https://code.google.com/archive/p/cuda-convnet/source/default/source
 https://code.google.com/archive/p/cuda-convnet2/source/default/source
+
+ILSVRC-2012
+https://www.image-net.org/challenges/LSVRC/2012/
+https://www.image-net.org/challenges/LSVRC/2012/browse-synsets.php
+
+
+80 Million Tiny Images
+https://archive.org/details/80-million-tiny-images-1-of-2
+https://groups.csail.mit.edu/vision/TinyImages/
+
+
+CIFAR-10 and CIFAR-100 datasets 
+https://www.cs.toronto.edu/~kriz/cifar.html
+https://www.cs.toronto.edu/~kriz/index.html
