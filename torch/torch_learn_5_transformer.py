@@ -37,8 +37,9 @@ class TinyGPT(nn.Module):
     def __init__(self, vocab_size, d_model, nhead, num_layers):
         super().__init__()
         self.embedding = nn.Embedding(vocab_size, d_model)
-        decoder_layer = nn.TransformerDecoderLayer(d_model=d_model, nhead=nhead)
-        self.transformer_decoder = nn.TransformerDecoder(decoder_layer, num_layers=num_layers)
+        self.decoder_layer = nn.TransformerDecoderLayer(d_model=d_model, nhead=nhead)
+        #print(self.decoder_layer)
+        self.transformer_decoder = nn.TransformerDecoder(self.decoder_layer, num_layers=num_layers)
         self.fc_out = nn.Linear(d_model, vocab_size)
     
     def forward(self, tgt_seq, memory):
@@ -77,12 +78,13 @@ for epoch in range(epochs):
     src, tgt = generate_data(batch_size, seq_len, vocab_size)
     
     logits = model(src, memory)  # [seq_len, batch, vocab]
-    
+    w_before = model.transformer_decoder.layers[0].self_attn.in_proj_weight.clone()
     # reshape for cross-entropy: [seq_len*batch, vocab]
     loss = criterion(logits.view(-1, vocab_size), tgt.view(-1))
     loss.backward()
     optimizer.step()
-    
+    w_after = model.transformer_decoder.layers[0].self_attn.in_proj_weight
+    print(torch.allclose(w_before, w_after)) 
     if (epoch+1) % 50 == 0:
         print(f"Epoch {epoch+1}, Loss: {loss.item():.4f}")
 
