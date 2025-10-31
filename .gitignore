@@ -105,3 +105,4 @@ DeepAIEnv/
 data/
 .vscode/
 *.pth
+*.ndjson
